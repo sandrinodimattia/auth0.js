@@ -151,6 +151,7 @@ function Auth0 (options) {
   this._callbackURL = options.callbackURL || document.location.href;
   this._shouldRedirect = !!options.callbackURL;
   this._domain = options.domain;
+  this._tenantDomain = options.tenantDomain || this._domain;
   this._tenant = options.tenant || this._domain.split('.')[0];
   this._callbackOnLocationHash = false || options.callbackOnLocationHash;
   this._cordovaSocialPlugins = {
@@ -458,9 +459,9 @@ Auth0.prototype.parseHash = function (hash) {
   }
 
   // iss should be the Auth0 domain (i.e.: https://contoso.auth0.com/)
-  if (prof.iss && prof.iss !== 'https://' + this._domain + '/') {
+  if (prof.iss && prof.iss !== 'https://' + this._tenantDomain + '/') {
     return invalidJwt(
-      'The domain configured (https://' + this._domain + '/) does not match with the domain set in the token (' + prof.iss + ').');
+      'The domain configured (https://' + this._tenantDomain + '/) does not match with the domain set in the token (' + prof.iss + ').');
   }
 
   return {
@@ -4141,7 +4142,7 @@ function decode(str) {
 
     function timedOut() {
       self._timedOut = true
-      self.request.abort()      
+      self.request.abort()
     }
 
     function error(resp, msg, t) {
