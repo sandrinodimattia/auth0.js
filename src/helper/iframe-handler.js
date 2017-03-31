@@ -46,6 +46,9 @@ IframeHandler.prototype.init = function () {
 };
 
 IframeHandler.prototype.messageEventListener = function (e) {
+  if (!e.data || e.data === '' || e.data.type === 'webpackOk') {
+    return;
+  }
   this.destroy();
   this.callbackHandler(e.data);
 };
